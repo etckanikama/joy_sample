@@ -2,6 +2,14 @@
 #include <sensor_msgs/Joy.h>
 #include <geometry_msgs/Twist.h>
 
+/**
+ * 動かし方
+ * roslaunch ypspur_ros_bridge yamabiko.launch
+ * rosrun joy joy_node
+ * rosrun joy_sample joy_sub_node
+ *
+ */
+
 class JoyController
 {
 private:
@@ -17,8 +25,8 @@ private:
         // ROS_INFO("button[0]:%d", msg.buttons[0]); //ボタンの状態を表示0 or 1
 
         joy_msg = msg;
-        //ROS_INFO("msg:%ld", msg.buttons.size());
-        //ROS_INFO("rec:%ld", joy_msg.buttons.size());
+        // ROS_INFO("msg:%ld", msg.buttons.size());
+        // ROS_INFO("rec:%ld", joy_msg.buttons.size());
     }
 
 public:
@@ -32,27 +40,30 @@ public:
     {
         ros::Rate loop_rate(10);
         joy_msg.buttons.resize(17);
-        //ROS_INFO("button[0]:%d", joy_msg.buttons[0]);
-        //printf("hoge:%d", joy_msg.buttons[0]);
+        // ROS_INFO("button[0]:%d", joy_msg.buttons[0]);
+        // printf("hoge:%d", joy_msg.buttons[0]);
         while (ros::ok())
         {
-             ros::spinOnce();
-             //if(joy_msg.buttons[0] == 0)
-             ROS_INFO("button[0]:%d", joy_msg.buttons[0]);
-        //     geometry_msgs::Twist pub_msg;
-        //     ROS_INFO("button[0]:%d", joy_msg.buttons[0]);
-        //     // if (joy_msg.buttons[0] == 1)
-        //     // {
-        //     //     pub_msg.linear.x = 0.2;
-        //     //     pub_msg.angular.z = 0.0;
-        //     // }
-        //     // else
-        //     // {
-        //     //     pub_msg.linear.x = 0.0;
-        //     // }
+            ros::spinOnce();
+            //  if(joy_msg.buttons[0] == 0)
+            
+            geometry_msgs::Twist pub_msg;
 
-        //     pub_twist_.publish(pub_msg);
-        //     loop_rate.sleep();
+            //     ROS_INFO("button[0]:%d", joy_msg.buttons[0]);
+            if (joy_msg.buttons[0] == 1)
+            {
+                ROS_INFO("button[0]:%d", joy_msg.buttons[0]);
+                pub_msg.linear.x = 0.2;
+                pub_msg.angular.z = 0.0;
+            }
+            else
+            {
+                pub_msg.linear.x = 0.0;
+                
+            }
+
+            pub_twist_.publish(pub_msg);
+            loop_rate.sleep();
         }
     }
 };
@@ -62,8 +73,6 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "joy_sub_node");
     JoyController joy_test;
     joy_test.mainloop();
-
-    
 
     return 0;
 }
