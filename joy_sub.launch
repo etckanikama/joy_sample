@@ -1,0 +1,4 @@
+<launch>
+    <node name="joy_node" pkg="joy" type="joy_node" />
+    <node name="joy_sub_node" pkg="joy_sample" type="joy_sub_node" output="screen" />
+</launch>
