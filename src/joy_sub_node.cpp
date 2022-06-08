@@ -21,11 +21,11 @@ private:
     {
 
         // rostopic echo /joyから受け取るmsgの内容を出力
-        // ROS_INFO("axes[0]:%f", msg.axes[0]);      //スティック0の傾き状態を表示-1~1
+        // ROS_INFO("axes[0]:%f", msg.axes[0]);   //スティック0の傾き状態を表示-1~1
         // ROS_INFO("button[0]:%d", msg.buttons[0]); //ボタンの状態を表示0 or 1
 
         joy_msg = msg;
-        // ROS_INFO("msg:%ld", msg.buttons.size());
+        // ROS_INFO("msg:%ld", msg.axes.size());
         // ROS_INFO("rec:%ld", joy_msg.buttons.size());
     }
 
@@ -40,27 +40,15 @@ public:
     {
         ros::Rate loop_rate(10);
         joy_msg.buttons.resize(17);
-        // ROS_INFO("button[0]:%d", joy_msg.buttons[0]);
-        // printf("hoge:%d", joy_msg.buttons[0]);
+        joy_msg.axes.resize(6);
+
         while (ros::ok())
         {
             ros::spinOnce();
-            //  if(joy_msg.buttons[0] == 0)
-            
             geometry_msgs::Twist pub_msg;
 
-            //     ROS_INFO("button[0]:%d", joy_msg.buttons[0]);
-            if (joy_msg.buttons[0] == 1)
-            {
-                ROS_INFO("button[0]:%d", joy_msg.buttons[0]);
-                pub_msg.linear.x = 0.2;
-                pub_msg.angular.z = 0.0;
-            }
-            else
-            {
-                pub_msg.linear.x = 0.0;
-                
-            }
+            pub_msg.linear.x = joy_msg.axes[1];
+            pub_msg.angular.z = joy_msg.axes[3];
 
             pub_twist_.publish(pub_msg);
             loop_rate.sleep();
