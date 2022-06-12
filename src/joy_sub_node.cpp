@@ -5,7 +5,9 @@
 /**
  * 動かし方
  * roslaunch ypspur_ros_bridge yamabiko.launch
+ * roslaunch yamasemi_sim gmapping_yamasemi_2022.launch
  * rosrun joy joy_node
+ * pspボタンを押す
  * rosrun joy_sample joy_sub_node
  *
  */
@@ -15,6 +17,7 @@ class JoyController
 private:
     ros::Subscriber sub_joy_;
     ros::Publisher pub_twist_;
+    ros::Publisher pub_twist_sim;
     sensor_msgs::Joy joy_msg;
 
     void joy_callback(const sensor_msgs::Joy &msg)
@@ -34,10 +37,12 @@ public:
     {
         ros::NodeHandle nh;
         pub_twist_ = nh.advertise<geometry_msgs::Twist>("cmd_vel", 5);
+        pub_twist_sim = nh.advertise<geometry_msgs::Twist>("/beego/diff_drive_controller/cmd_vel", 10);
         sub_joy_ = nh.subscribe("joy", 10, &JoyController::joy_callback, this);
     }
     void mainloop()
     {
+
         ros::Rate loop_rate(10);
         joy_msg.buttons.resize(17);
         joy_msg.axes.resize(6);
@@ -47,10 +52,20 @@ public:
             ros::spinOnce();
             geometry_msgs::Twist pub_msg;
 
-            pub_msg.linear.x = joy_msg.axes[1];
-            pub_msg.angular.z = joy_msg.axes[3];
+            if (joy_msg.buttons[6] == 1) //コントローラのL2ボタンを押しながらのときだけ実機を操作できる
+            {
+                pub_msg.linear.x = joy_msg.axes[1];
+                pub_msg.angular.z = joy_msg.axes[3];
+                pub_twist_.publish(pub_msg);
+            }
 
-            pub_twist_.publish(pub_msg);
+            if (joy_msg.buttons[7] == 1) //コントローラのR2ボタンを押しながらのときに
+            {
+                pub_msg.linear.x = joy_msg.axes[1];
+                pub_msg.angular.z = joy_msg.axes[3];
+                pub_twist_sim.publish(pub_msg);
+            }
+
             loop_rate.sleep();
         }
     }
