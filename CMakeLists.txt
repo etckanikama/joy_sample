@@ -6,6 +6,10 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   std_msgs
   sensor_msgs
+  move_base_msgs
+  actionlib_msgs
+  tf2_ros
+  tf2_geometry_msgs
 
 )
 ## DEPENDS: system dependencies of this project that dependent projects also need
@@ -25,3 +29,5 @@ include_directories(
 add_executable(joy_sub_node src/joy_sub_node.cpp)
 target_link_libraries(joy_sub_node ${catkin_LIBRARIES})
 
+add_executable(move_base_node src/move_base_node.cpp)
+target_link_libraries(move_base_node ${catkin_LIBRARIES})
