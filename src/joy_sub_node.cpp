@@ -54,15 +54,15 @@ public:
 
             if (joy_msg.buttons[6] == 1) //コントローラのL2ボタンを押しながらのときだけ実機を操作できる
             {
-                pub_msg.linear.x = joy_msg.axes[1];
-                pub_msg.angular.z = joy_msg.axes[3];
+                pub_msg.linear.x = 0.1*joy_msg.axes[1];
+                pub_msg.angular.z = 0.1*joy_msg.axes[3];
                 pub_twist_.publish(pub_msg);
             }
 
             if (joy_msg.buttons[7] == 1) //コントローラのR2ボタンを押しながらのときに
             {
-                pub_msg.linear.x = joy_msg.axes[1];
-                pub_msg.angular.z = joy_msg.axes[3];
+                pub_msg.linear.x = 0.1*joy_msg.axes[1];
+                pub_msg.angular.z = 0.1*joy_msg.axes[3];
                 pub_twist_sim.publish(pub_msg);
             }
 
